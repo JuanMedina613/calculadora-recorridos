@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculadora de Recorridos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* bg-gray-100 */
+            touch-action: manipulation; /* Previene el zoom al hacer doble tap en celulares */
+        }
+        
+        /* Oculta la barra de scroll para una vista de app más limpia */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .section-item {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Estados visuales de las secciones */
+        .state-completed {
+            background-color: #dcfce7; /* bg-green-100 */
+            border-left: 6px solid #16a34a; /* border-green-600 */
+            color: #14532d; /* text-green-900 */
+        }
+        
+        .state-interrupted {
+            background-color: #fee2e2; /* bg-red-100 */
+            border-left: 6px solid #dc2626; /* border-red-600 */
+            color: #7f1d1d; /* text-red-900 */
+            font-weight: bold;
+        }
+        
+        .state-pending {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            border-left: 6px solid #d1d5db; /* border-gray-300 */
+            color: #9ca3af; /* text-gray-400 */
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased flex justify-center">
+
+    <!-- Contenedor Principal (Simula pantalla de celular) -->
+    <main class="w-full max-w-md min-h-screen bg-white shadow-xl flex flex-col relative pb-48">
+        
+        <!-- Encabezado -->
+        <header class="bg-blue-800 text-white p-5 text-center shadow-md z-10">
+            <h1 class="text-2xl font-bold tracking-wide">Calculadora de Recorridos</h1>
+            <p class="text-blue-200 text-sm mt-1">Control de kilómetros</p>
+        </header>
+
+        <!-- Sección de Configuración -->
+        <section class="p-5 bg-white shadow-sm border-b z-10">
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2 text-lg">1. Seleccionar Línea</label>
+                <select id="select-linea" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3.5">
+                    <option value="">-- Elegir Línea --</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Ramal Ida</label>
+                    <select id="select-ida" disabled class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3.5 disabled:opacity-50">
+                        <option value="">--</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Ramal Vuelta</label>
+                    <select id="select-vuelta" disabled class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3.5 disabled:opacity-50">
+                        <option value="">--</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="btn-cargar" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-4 px-4 rounded-xl text-lg shadow-lg transition-colors">
+                Cargar Recorrido
+            </button>
+        </section>
+
+        <!-- Mensaje de Instrucción -->
+        <div id="instruction-msg" class="hidden p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 text-sm m-4 rounded">
+            <strong>Instrucción:</strong> Toca la sección exacta donde se cortó el servicio o se rompió el coche.
+        </div>
+
+        <!-- Lista Interactiva del Recorrido -->
+        <section id="route-container" class="flex-1 overflow-y-auto p-4 space-y-2">
+            <!-- Los items de ruta se generarán aquí mediante JavaScript -->
+            <div id="empty-state" class="text-center text-gray-400 mt-10">
+                <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                <p class="text-lg">Configura el recorrido arriba y presiona "Cargar".</p>
+            </div>
+        </section>
+
+        <!-- Panel de Resultados (Fijado abajo) -->
+        <section class="fixed bottom-0 w-full max-w-md bg-white shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] border-t border-gray-200 p-4 pb-6 z-20">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-600 font-semibold text-sm uppercase">Total del Recorrido</span>
+                <span id="res-total" class="font-bold text-gray-800 text-xl">0.00 km</span>
+            </div>
+            
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-gray-600 font-semibold text-sm uppercase">Km Realizados (Hechos)</span>
+                <span id="res-realizados" class="font-bold text-green-600 text-xl">0.00 km</span>
+            </div>
+
+            <div class="flex justify-between items-center p-3 bg-red-50 rounded-xl border border-red-200">
+                <span class="text-red-800 font-bold uppercase">Km Perdidos (No hechos)</span>
+                <span id="res-perdidos" class="font-black text-red-600 text-2xl">0.00 km</span>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // 1. Estructura de datos proporcionada
+        const rutasData = {
+            '188': {
+                'A': {
+                    ida: [ {name: 'Cruce de Lomas a Budge', km: 4.70}, {name: 'Budge a Recondo', km: 7.00}, {name: 'Recondo a Armenia', km: 9.60}, {name: 'Armenia a Pompeya', km: 2.20}, {name: 'Pompeya a Caseros', km: 2.90}, {name: 'Caseros a Once', km: 3.60}, {name: 'Once a Htal. Niños', km: 3.60}, {name: 'Htal. Niños a Las Heras', km: 1.90}, {name: 'Las Heras a Plaza Italia', km: 1.30} ],
+                    vuelta: [ {name: 'Plaza Italia a Las Heras', km: 1.10}, {name: 'Las Heras a Htal. Niños', km: 2.10}, {name: 'Htal. Niños a Once', km: 2.40}, {name: 'Once a Caseros', km: 4.10}, {name: 'Caseros a Pompeya', km: 3.20}, {name: 'Pompeya a Armenia', km: 2.00}, {name: 'Armenia a Recondo', km: 9.50}, {name: 'Recondo a Budge', km: 2.70}, {name: 'Budge a Cruce de Lomas', km: 4.70} ]
+                },
+                'B': {
+                    ida: [ {name: 'Cruce de Lomas a Olmos', km: 4.90}, {name: 'Olmos a Tribunales', km: 2.80}, {name: 'Tribunales a Recondo', km: 3.80}, {name: 'Recondo a Sadop', km: 5.20}, {name: 'Sadop a Armenia', km: 3.60}, {name: 'Armenia a Pompeya', km: 2.20}, {name: 'Pompeya a Caseros', km: 2.90}, {name: 'Caseros a Once', km: 3.60}, {name: 'Once a Htal. Niños', km: 3.60}, {name: 'Htal. Niños a Las Heras', km: 1.90}, {name: 'Las Heras a Plaza Italia', km: 1.30} ],
+                    vuelta: [ {name: 'Plaza Italia a Las Heras', km: 1.10}, {name: 'Las Heras a Htal. Niños', km: 2.10}, {name: 'Htal. Niños a Once', km: 2.40}, {name: 'Once a Caseros', km: 4.10}, {name: 'Caseros a Pompeya', km: 3.20}, {name: 'Pompeya a Armenia', km: 2.00}, {name: 'Armenia a Sadop', km: 3.40}, {name: 'Sadop a Recondo', km: 5.30}, {name: 'Recondo a Tribunales', km: 4.30}, {name: 'Tribunales a Olmos', km: 2.70}, {name: 'Olmos a Cruce de Lomas', km: 4.20} ]
+                }
+            },
+            '20': {
+                'A': {
+                    ida: [ {name: 'Cruce de Lomas a Siritto', km: 3.16}, {name: 'Siritto a Larroque', km: 3.20}, {name: 'Larroque a Hornos', km: 4.78}, {name: 'Hornos a Viamonte', km: 2.71}, {name: 'Viamonte a Alsina', km: 2.98}, {name: 'Alsina a Pte. V. Sarfield', km: 2.97}, {name: 'Pte. V. Sarfield a M. Oca', km: 2.61}, {name: 'M. Oca a Alte. Brown', km: 2.46}, {name: 'Alte. Brown a Belgrano', km: 3.81}, {name: 'Belgrano a Retiro', km: 4.34} ],
+                    vuelta: [ {name: 'Retiro a Belgrano', km: 3.24}, {name: 'Belgrano a Alte. Brown', km: 3.61}, {name: 'Alte. Brown a M. Oca', km: 2.37}, {name: 'M. Oca a Pte. V. Sarfield', km: 2.72}, {name: 'Pte. V. Sarfield a Alsina', km: 2.40}, {name: 'Alsina a Viamonte', km: 2.73}, {name: 'Viamonte a Hornos', km: 2.63}, {name: 'Hornos a Larroque', km: 4.60}, {name: 'Larroque a Siritto', km: 3.00}, {name: 'Siritto A Cruce de Lomas', km: 3.15} ]
+                }
+            }
+        };
+
+        // Variables de estado
+        let recorridoActual = []; // Guardará todas las secciones (ida + vuelta)
+        let totalKm = 0;
+
+        // Referencias a elementos del DOM
+        const selectLinea = document.getElementById('select-linea');
+        const selectIda = document.getElementById('select-ida');
+        const selectVuelta = document.getElementById('select-vuelta');
+        const btnCargar = document.getElementById('btn-cargar');
+        const routeContainer = document.getElementById('route-container');
+        const instructionMsg = document.getElementById('instruction-msg');
+        
+        // Elementos de resultados
+        const resTotal = document.getElementById('res-total');
+        const resRealizados = document.getElementById('res-realizados');
+        const resPerdidos = document.getElementById('res-perdidos');
+
+        // Inicializar selector de líneas
+        window.onload = () => {
+            const lineas = Object.keys(rutasData);
+            lineas.forEach(linea => {
+                const option = document.createElement('option');
+                option.value = linea;
+                option.textContent = `Línea ${linea}`;
+                selectLinea.appendChild(option);
+            });
+        };
+
+        // Manejar cambio de Línea
+        selectLinea.addEventListener('change', (e) => {
+            const linea = e.target.value;
+            
+            // Limpiar selectores de ramales
+            selectIda.innerHTML = '<option value="">-- Elegir Ida --</option>';
+            selectVuelta.innerHTML = '<option value="">-- Elegir Vuelta --</option>';
+            
+            if (linea && rutasData[linea]) {
+                const ramales = Object.keys(rutasData[linea]);
+                
+                ramales.forEach(ramal => {
+                    selectIda.innerHTML += `<option value="${ramal}">Ramal ${ramal}</option>`;
+                    selectVuelta.innerHTML += `<option value="${ramal}">Ramal ${ramal}</option>`;
+                });
+                
+                selectIda.disabled = false;
+                selectVuelta.disabled = false;
+            } else {
+                selectIda.disabled = true;
+                selectVuelta.disabled = true;
+            }
+        });
+
+        // Cargar el recorrido
+        btnCargar.addEventListener('click', () => {
+            const linea = selectLinea.value;
+            const ida = selectIda.value;
+            const vuelta = selectVuelta.value;
+
+            if (!linea || !ida || !vuelta) {
+                // Pequeña advertencia visual en lugar de alert()
+                const originalText = btnCargar.innerText;
+                btnCargar.innerText = "¡Selecciona todas las opciones!";
+                btnCargar.classList.replace('bg-blue-600', 'bg-red-500');
+                setTimeout(() => {
+                    btnCargar.innerText = originalText;
+                    btnCargar.classList.replace('bg-red-500', 'bg-blue-600');
+                }, 2000);
+                return;
+            }
+
+            // Construir el array completo del recorrido
+            recorridoActual = [];
+            const dataIda = rutasData[linea][ida].ida;
+            const dataVuelta = rutasData[linea][vuelta].vuelta;
+
+            // Marcar las de ida
+            dataIda.forEach(sec => {
+                recorridoActual.push({ ...sec, sentido: 'IDA' });
+            });
+
+            // Marcar las de vuelta
+            dataVuelta.forEach(sec => {
+                recorridoActual.push({ ...sec, sentido: 'VUELTA' });
+            });
+
+            renderizarRuta();
+        });
+
+        function renderizarRuta() {
+            routeContainer.innerHTML = ''; // Limpiar
+            totalKm = 0;
+            
+            let htmlHTML = '';
+            
+            recorridoActual.forEach((seccion, index) => {
+                totalKm += seccion.km;
+                
+                // Divisores de Sentido
+                if (index === 0) {
+                    htmlHTML += `<div class="bg-gray-800 text-white text-sm font-bold p-2 text-center rounded shadow-sm sticky top-0 z-10">SENTIDO IDA (Ramal ${selectIda.value})</div>`;
+                } else if (index === rutasData[selectLinea.value][selectIda.value].ida.length) {
+                    htmlHTML += `<div class="bg-gray-800 text-white text-sm font-bold p-2 text-center rounded shadow-sm sticky top-0 z-10 mt-4">SENTIDO VUELTA (Ramal ${selectVuelta.value})</div>`;
+                }
+
+                htmlHTML += `
+                    <div id="sec-${index}" class="section-item state-pending rounded-lg p-4 mb-2 cursor-pointer shadow-sm border border-gray-200" onclick="marcarCorte(${index})">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-lg leading-tight w-3/4">${seccion.name}</span>
+                            <span class="text-right font-bold w-1/4">${seccion.km.toFixed(2)} km</span>
+                        </div>
+                        <div class="text-xs mt-1 opacity-70 status-text">Pendiente</div>
+                    </div>
+                `;
+            });
+
+            // Botón extra al final por si hizo el recorrido completo sin problemas
+            htmlHTML += `
+                <div class="mt-4 p-4 bg-blue-50 border-2 border-blue-400 border-dashed rounded-lg text-center text-blue-800 font-bold cursor-pointer" onclick="marcarRecorridoCompleto()">
+                    ✅ Completó todo el recorrido sin cortes
+                </div>
+            `;
+
+            routeContainer.innerHTML = htmlHTML;
+            instructionMsg.classList.remove('hidden'); // Mostrar instrucción
+
+            // Actualizar panel (inicialmente todo en 0 y Total configurado)
+            actualizarResultados(totalKm, 0);
+        }
+
+        // Lógica al tocar una sección (donde se rompió/cortó)
+        // Se asume que todo lo ANTERIOR a esta sección se realizó.
+        // La sección tocada y las SIGUIENTES NO se realizaron (se perdieron).
+        window.marcarCorte = function(indexCorte) {
+            let kmRealizados = 0;
+
+            recorridoActual.forEach((seccion, index) => {
+                const el = document.getElementById(`sec-${index}`);
+                const statusText = el.querySelector('.status-text');
+
+                // Limpiar clases
+                el.classList.remove('state-pending', 'state-completed', 'state-interrupted');
+
+                if (index < indexCorte) {
+                    // Completado
+                    el.classList.add('state-completed');
+                    statusText.innerText = "✓ Recorrido completado";
+                    kmRealizados += seccion.km;
+                } else if (index === indexCorte) {
+                    // Punto de corte
+                    el.classList.add('state-interrupted');
+                    statusText.innerText = "⚠️ Corte de servicio aquí";
+                } else {
+                    // Perdido
+                    el.classList.add('state-pending');
+                    statusText.innerText = "✕ No realizado";
+                }
+            });
+
+            actualizarResultados(totalKm, kmRealizados);
+        };
+
+        window.marcarRecorridoCompleto = function() {
+            let kmRealizados = 0;
+            
+            recorridoActual.forEach((seccion, index) => {
+                const el = document.getElementById(`sec-${index}`);
+                const statusText = el.querySelector('.status-text');
+                
+                el.classList.remove('state-pending', 'state-interrupted');
+                el.classList.add('state-completed');
+                statusText.innerText = "✓ Recorrido completado";
+                
+                kmRealizados += seccion.km;
+            });
+
+            actualizarResultados(totalKm, kmRealizados);
+        }
+
+        function actualizarResultados(total, realizados) {
+            const perdidos = total - realizados;
+
+            resTotal.innerText = total.toFixed(2) + " km";
+            resRealizados.innerText = realizados.toFixed(2) + " km";
+            resPerdidos.innerText = perdidos.toFixed(2) + " km";
+        }
+
+    </script>
+</body>
+</html>
