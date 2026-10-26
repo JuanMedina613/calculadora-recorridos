@@ -20,7 +20,8 @@
         }
 
         .section-item {
-            transition: all 0.2s ease-in-out;
+            transition: all 0.15s ease-in-out;
+            user-select: none;
         }
 
         /* Estados visuales de las secciones */
@@ -34,69 +35,68 @@
             background-color: #fee2e2; /* bg-red-100 */
             border-left: 6px solid #dc2626; /* border-red-600 */
             color: #7f1d1d; /* text-red-900 */
-            font-weight: bold;
-        }
-        
-        .state-pending {
-            background-color: #f3f4f6; /* bg-gray-100 */
-            border-left: 6px solid #d1d5db; /* border-gray-300 */
-            color: #9ca3af; /* text-gray-400 */
         }
     </style>
 </head>
 <body class="text-gray-800 antialiased flex justify-center">
 
     <!-- Contenedor Principal (Simula pantalla de celular) -->
-    <main class="w-full max-w-md min-h-screen bg-white shadow-xl flex flex-col relative pb-48">
+    <main class="w-full max-w-md min-h-screen bg-white shadow-xl flex flex-col relative pb-52">
         
         <!-- Encabezado -->
-        <header class="bg-blue-800 text-white p-5 text-center shadow-md z-10">
-            <h1 class="text-2xl font-bold tracking-wide">Calculadora de Recorridos</h1>
-            <p class="text-blue-200 text-sm mt-1">Control de kilómetros</p>
+        <header class="bg-blue-800 text-white p-5 text-center shadow-md z-10 flex justify-between items-center">
+            <div class="text-left">
+                <h1 class="text-xl font-bold tracking-wide">juaaaaaaaaaaaaaaaaaaan</h1>
+                <p class="text-blue-200 text-xs mt-0.5">Control de kilómetros por vuelta</p>
+            </div>
+            <button id="btn-reiniciar" class="hidden bg-blue-950 hover:bg-red-700 text-xs text-white font-semibold py-2 px-3 rounded-lg border border-blue-600 transition-colors">
+                Reiniciar Todo
+            </button>
         </header>
 
         <!-- Sección de Configuración -->
         <section class="p-5 bg-white shadow-sm border-b z-10">
             <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2 text-lg">1. Seleccionar Línea</label>
-                <select id="select-linea" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3.5">
-                    <option value="">-- Elegir Línea --</option>
+                <label class="block text-gray-700 font-semibold mb-1.5 text-base">Línea</label>
+                <select id="select-linea" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-lg font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3">
+                    <!-- Se llena automáticamente y selecciona la primera por defecto -->
                 </select>
             </div>
 
             <div class="grid grid-cols-2 gap-3 mb-4">
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Ramal Ida</label>
-                    <select id="select-ida" disabled class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3.5 disabled:opacity-50">
-                        <option value="">--</option>
+                    <label class="block text-gray-700 font-semibold mb-1.5 text-sm">Ramal Ida <span class="text-xs font-normal text-gray-500">(Opcional)</span></label>
+                    <select id="select-ida" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3">
+                        <option value="">-- No hizo Ida --</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Ramal Vuelta</label>
-                    <select id="select-vuelta" disabled class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3.5 disabled:opacity-50">
-                        <option value="">--</option>
+                    <label class="block text-gray-700 font-semibold mb-1.5 text-sm">Ramal Vuelta <span class="text-xs font-normal text-gray-500">(Opcional)</span></label>
+                    <select id="select-vuelta" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3">
+                        <option value="">-- No hizo Vuelta --</option>
                     </select>
                 </div>
             </div>
 
-            <button id="btn-cargar" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-4 px-4 rounded-xl text-lg shadow-lg transition-colors">
-                Cargar Recorrido
+            <button id="btn-cargar" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-lg shadow-md transition-colors flex items-center justify-center gap-2">
+                <span>+ Agregar Vuelta</span>
             </button>
+            <p class="text-xs text-gray-500 text-center mt-2">Podés elegir solo Ida, solo Vuelta o ambos. Luego podés seguir agregando más vueltas abajo.</p>
         </section>
 
         <!-- Mensaje de Instrucción -->
-        <div id="instruction-msg" class="hidden p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 text-sm m-4 rounded">
-            <strong>Instrucción:</strong> Toca la sección exacta donde se cortó el servicio o se rompió el coche.
+        <div id="instruction-msg" class="hidden p-3.5 bg-blue-50 border-l-4 border-blue-500 text-blue-900 text-sm mx-4 mt-4 rounded-r-lg shadow-sm">
+            <strong>Modo de uso:</strong> Todas las secciones inician como <strong>Realizadas (Verde)</strong>. Toca individualmente las secciones que <strong>NO se hicieron</strong> para pasarlas a <strong>Perdidas (Rojo)</strong>. Si el colectivo se reactiva más adelante, deja esas secciones en verde.
         </div>
 
-        <!-- Lista Interactiva del Recorrido -->
-        <section id="route-container" class="flex-1 overflow-y-auto p-4 space-y-2">
-            <!-- Los items de ruta se generarán aquí mediante JavaScript -->
+        <!-- Lista Interactiva de Vueltas -->
+        <section id="route-container" class="flex-1 overflow-y-auto p-4 space-y-6">
+            <!-- Los bloques de vueltas se generarán aquí mediante JavaScript -->
             <div id="empty-state" class="text-center text-gray-400 mt-10">
                 <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                 </svg>
-                <p class="text-lg">Configura el recorrido arriba y presiona "Cargar".</p>
+                <p class="text-base px-6">Selecciona la línea y los ramales arriba y presiona <strong>"+ Agregar Vuelta"</strong>.</p>
             </div>
         </section>
 
@@ -121,35 +121,203 @@
     </main>
 
     <script>
-        // 1. Estructura de datos proporcionada
+        // 1. Estructura de datos completa extraída de las planillas
         const rutasData = {
             '188': {
                 'A': {
-                    ida: [ {name: 'Cruce de Lomas a Budge', km: 4.70}, {name: 'Budge a Recondo', km: 7.00}, {name: 'Recondo a Armenia', km: 9.60}, {name: 'Armenia a Pompeya', km: 2.20}, {name: 'Pompeya a Caseros', km: 2.90}, {name: 'Caseros a Once', km: 3.60}, {name: 'Once a Htal. Niños', km: 3.60}, {name: 'Htal. Niños a Las Heras', km: 1.90}, {name: 'Las Heras a Plaza Italia', km: 1.30} ],
-                    vuelta: [ {name: 'Plaza Italia a Las Heras', km: 1.10}, {name: 'Las Heras a Htal. Niños', km: 2.10}, {name: 'Htal. Niños a Once', km: 2.40}, {name: 'Once a Caseros', km: 4.10}, {name: 'Caseros a Pompeya', km: 3.20}, {name: 'Pompeya a Armenia', km: 2.00}, {name: 'Armenia a Recondo', km: 9.50}, {name: 'Recondo a Budge', km: 2.70}, {name: 'Budge a Cruce de Lomas', km: 4.70} ]
+                    label: 'Ramal A (Budge - Plaza Italia)',
+                    ida: [
+                        {name: 'Cruce de Lomas a Budge', km: 4.70},
+                        {name: 'Budge a Recondo', km: 7.00},
+                        {name: 'Recondo a Armenia', km: 9.60},
+                        {name: 'Armenia a Pompeya', km: 2.20},
+                        {name: 'Pompeya a Caseros', km: 2.90},
+                        {name: 'Caseros a Once', km: 3.60},
+                        {name: 'Once a Htal. Niños', km: 3.60},
+                        {name: 'Htal. Niños a Las Heras', km: 1.90},
+                        {name: 'Las Heras a Plaza Italia', km: 1.30}
+                    ],
+                    vuelta: [
+                        {name: 'Plaza Italia a Las Heras', km: 1.10},
+                        {name: 'Las Heras a Htal. Niños', km: 2.10},
+                        {name: 'Htal. Niños a Once', km: 2.40},
+                        {name: 'Once a Caseros', km: 4.10},
+                        {name: 'Caseros a Pompeya', km: 3.20},
+                        {name: 'Pompeya a Armenia', km: 2.00},
+                        {name: 'Armenia a Recondo', km: 9.50},
+                        {name: 'Recondo a Budge', km: 2.70},
+                        {name: 'Budge a Cruce de Lomas', km: 4.70}
+                    ]
                 },
                 'B': {
-                    ida: [ {name: 'Cruce de Lomas a Olmos', km: 4.90}, {name: 'Olmos a Tribunales', km: 2.80}, {name: 'Tribunales a Recondo', km: 3.80}, {name: 'Recondo a Sadop', km: 5.20}, {name: 'Sadop a Armenia', km: 3.60}, {name: 'Armenia a Pompeya', km: 2.20}, {name: 'Pompeya a Caseros', km: 2.90}, {name: 'Caseros a Once', km: 3.60}, {name: 'Once a Htal. Niños', km: 3.60}, {name: 'Htal. Niños a Las Heras', km: 1.90}, {name: 'Las Heras a Plaza Italia', km: 1.30} ],
-                    vuelta: [ {name: 'Plaza Italia a Las Heras', km: 1.10}, {name: 'Las Heras a Htal. Niños', km: 2.10}, {name: 'Htal. Niños a Once', km: 2.40}, {name: 'Once a Caseros', km: 4.10}, {name: 'Caseros a Pompeya', km: 3.20}, {name: 'Pompeya a Armenia', km: 2.00}, {name: 'Armenia a Sadop', km: 3.40}, {name: 'Sadop a Recondo', km: 5.30}, {name: 'Recondo a Tribunales', km: 4.30}, {name: 'Tribunales a Olmos', km: 2.70}, {name: 'Olmos a Cruce de Lomas', km: 4.20} ]
+                    label: 'Ramal B (L. de la Torre - Plaza Italia)',
+                    ida: [
+                        {name: 'Cruce de Lomas a Olmos', km: 4.90},
+                        {name: 'Olmos a Tribunales', km: 2.80},
+                        {name: 'Tribunales a Recondo', km: 3.80},
+                        {name: 'Recondo a Sadop', km: 5.20},
+                        {name: 'Sadop a Armenia', km: 3.60},
+                        {name: 'Armenia a Pompeya', km: 2.20},
+                        {name: 'Pompeya a Caseros', km: 2.90},
+                        {name: 'Caseros a Once', km: 3.60},
+                        {name: 'Once a Htal. Niños', km: 3.60},
+                        {name: 'Htal. Niños a Las Heras', km: 1.90},
+                        {name: 'Las Heras a Plaza Italia', km: 1.30}
+                    ],
+                    vuelta: [
+                        {name: 'Plaza Italia a Las Heras', km: 1.10},
+                        {name: 'Las Heras a Htal. Niños', km: 2.10},
+                        {name: 'Htal. Niños a Once', km: 2.40},
+                        {name: 'Once a Caseros', km: 4.10},
+                        {name: 'Caseros a Pompeya', km: 3.20},
+                        {name: 'Pompeya a Armenia', km: 2.00},
+                        {name: 'Armenia a Sadop', km: 3.40},
+                        {name: 'Sadop a Recondo', km: 5.30},
+                        {name: 'Recondo a Tribunales', km: 4.30},
+                        {name: 'Tribunales a Olmos', km: 2.70},
+                        {name: 'Olmos a Cruce de Lomas', km: 4.20}
+                    ]
+                },
+                'C': {
+                    label: 'Ramal C (Camino Negro - Once)',
+                    ida: [
+                        {name: 'Cruce de Lomas a Tribunales', km: 6.50},
+                        {name: 'Tribunales a Recondo', km: 3.80},
+                        {name: 'Recondo a Sadop', km: 5.20},
+                        {name: 'Sadop a Armenia', km: 3.60},
+                        {name: 'Armenia a Pompeya', km: 2.20},
+                        {name: 'Pompeya a Caseros', km: 2.90},
+                        {name: 'Caseros a Once', km: 5.30}
+                    ],
+                    vuelta: [
+                        {name: 'Once a Caseros', km: 4.10},
+                        {name: 'Caseros a Pompeya', km: 3.20},
+                        {name: 'Pompeya a Armenia', km: 2.00},
+                        {name: 'Armenia a Sadop', km: 3.40},
+                        {name: 'Sadop a Recondo', km: 5.30},
+                        {name: 'Recondo a Tribunales', km: 4.30},
+                        {name: 'Tribunales a Cruce de Lomas', km: 6.20}
+                    ]
+                },
+                'E': {
+                    label: 'Ramal E (Expreso - Plaza Italia)',
+                    ida: [
+                        {name: 'Cruce de Lomas a Tribunales', km: 6.50},
+                        {name: 'Tribunales a Recondo', km: 3.80},
+                        {name: 'Recondo a Pompeya', km: 9.20},
+                        {name: 'Pompeya a Caseros', km: 2.90},
+                        {name: 'Caseros a Once', km: 3.50},
+                        {name: 'Once a Htal. Niños', km: 3.60},
+                        {name: 'Htal. Niños a Las Heras', km: 1.90},
+                        {name: 'Las Heras a Plaza Italia', km: 1.30}
+                    ],
+                    vuelta: [
+                        {name: 'Plaza Italia a S. Ortiz', km: 0.80},
+                        {name: 'Las Heras a Htal. Niños', km: 2.10},
+                        {name: 'Htal. Niños a Once', km: 2.40},
+                        {name: 'Once a Caseros', km: 3.10},
+                        {name: 'Caseros a Pompeya', km: 3.50},
+                        {name: 'Pompeya a Recondo', km: 9.80},
+                        {name: 'Recondo a Tribunales', km: 3.70},
+                        {name: 'Tribunales a Cruce de Lomas', km: 6.20}
+                    ]
+                },
+                'G': {
+                    label: 'Ramal G (Budge - Once)',
+                    ida: [
+                        {name: 'Cruce de Lomas a Budge', km: 4.70},
+                        {name: 'Budge a Recondo', km: 7.00},
+                        {name: 'Recondo a Pompeya', km: 9.20},
+                        {name: 'Pompeya a Caseros', km: 2.90},
+                        {name: 'Caseros a Once', km: 5.20}
+                    ],
+                    vuelta: [
+                        {name: 'Once a Caseros', km: 3.10},
+                        {name: 'Caseros a Pompeya', km: 3.50},
+                        {name: 'Pompeya a Recondo', km: 9.80},
+                        {name: 'Recondo a Budge', km: 2.70},
+                        {name: 'Budge a Cruce de Lomas', km: 4.70}
+                    ]
+                },
+                'G_CORTO': {
+                    label: 'Ramal G Corto (Budge - Pompeya)',
+                    ida: [
+                        {name: 'Cruce de Lomas a Pompeya', km: 19.50}
+                    ],
+                    vuelta: [
+                        {name: 'Pompeya a Recondo', km: 9.80},
+                        {name: 'Recondo a Budge', km: 2.70},
+                        {name: 'Budge a Cruce de Lomas', km: 4.70}
+                    ]
                 }
             },
             '20': {
                 'A': {
-                    ida: [ {name: 'Cruce de Lomas a Siritto', km: 3.16}, {name: 'Siritto a Larroque', km: 3.20}, {name: 'Larroque a Hornos', km: 4.78}, {name: 'Hornos a Viamonte', km: 2.71}, {name: 'Viamonte a Alsina', km: 2.98}, {name: 'Alsina a Pte. V. Sarfield', km: 2.97}, {name: 'Pte. V. Sarfield a M. Oca', km: 2.61}, {name: 'M. Oca a Alte. Brown', km: 2.46}, {name: 'Alte. Brown a Belgrano', km: 3.81}, {name: 'Belgrano a Retiro', km: 4.34} ],
-                    vuelta: [ {name: 'Retiro a Belgrano', km: 3.24}, {name: 'Belgrano a Alte. Brown', km: 3.61}, {name: 'Alte. Brown a M. Oca', km: 2.37}, {name: 'M. Oca a Pte. V. Sarfield', km: 2.72}, {name: 'Pte. V. Sarfield a Alsina', km: 2.40}, {name: 'Alsina a Viamonte', km: 2.73}, {name: 'Viamonte a Hornos', km: 2.63}, {name: 'Hornos a Larroque', km: 4.60}, {name: 'Larroque a Siritto', km: 3.00}, {name: 'Siritto A Cruce de Lomas', km: 3.15} ]
+                    label: 'Ramal A (Itatí - Retiro)',
+                    ida: [
+                        {name: 'Cruce de Lomas a Siritto', km: 3.16},
+                        {name: 'Siritto a Larroque', km: 3.20},
+                        {name: 'Larroque a Hornos', km: 4.78},
+                        {name: 'Hornos a Viamonte', km: 2.71},
+                        {name: 'Viamonte a Alsina', km: 2.98},
+                        {name: 'Alsina a Pte. V. Sarfield', km: 2.97},
+                        {name: 'Pte. V. Sarfield a M. Oca', km: 2.61},
+                        {name: 'M. Oca a Alte. Brown', km: 2.46},
+                        {name: 'Alte. Brown a Belgrano', km: 3.81},
+                        {name: 'Belgrano a Retiro', km: 4.34}
+                    ],
+                    vuelta: [
+                        {name: 'Retiro a Belgrano', km: 3.24},
+                        {name: 'Belgrano a Alte. Brown', km: 3.61},
+                        {name: 'Alte. Brown a M. Oca', km: 2.37},
+                        {name: 'M. Oca a Pte. V. Sarfield', km: 2.72},
+                        {name: 'Pte. V. Sarfield a Alsina', km: 2.40},
+                        {name: 'Alsina a Viamonte', km: 2.73},
+                        {name: 'Viamonte a Hornos', km: 2.63},
+                        {name: 'Hornos a Larroque', km: 4.60},
+                        {name: 'Larroque a Siritto', km: 3.00},
+                        {name: 'Siritto a Cruce de Lomas', km: 3.15}
+                    ]
+                },
+                'B': {
+                    label: 'Ramal B (Rodríguez - Retiro)',
+                    ida: [
+                        {name: 'Cruce de Lomas a Olmos', km: 4.85},
+                        {name: 'Olmos a Las Tropas', km: 3.11},
+                        {name: 'Las Tropas a Hornos', km: 4.42},
+                        {name: 'Hornos a Viamonte', km: 2.71},
+                        {name: 'Viamonte a Alsina', km: 2.98},
+                        {name: 'Alsina a Pte. V. Sarfield', km: 2.97},
+                        {name: 'Pte. V. Sarfield a M. Oca', km: 2.61},
+                        {name: 'M. Oca a Alte. Brown', km: 2.46},
+                        {name: 'Alte. Brown a Belgrano', km: 3.81},
+                        {name: 'Belgrano a Retiro', km: 4.34}
+                    ],
+                    vuelta: [
+                        {name: 'Retiro a Belgrano', km: 3.24},
+                        {name: 'Belgrano a Alte. Brown', km: 3.61},
+                        {name: 'Alte. Brown a M. Oca', km: 2.37},
+                        {name: 'M. Oca a Pte. V. Sarfield', km: 2.72},
+                        {name: 'Pte. V. Sarfield a Alsina', km: 2.40},
+                        {name: 'Alsina a Viamonte', km: 2.73},
+                        {name: 'Viamonte a Hornos', km: 2.63},
+                        {name: 'Hornos a Las Tropas', km: 4.51},
+                        {name: 'Las Tropas a Olmos', km: 3.07},
+                        {name: 'Olmos a Cruce de Lomas', km: 4.21}
+                    ]
                 }
             }
         };
 
-        // Variables de estado
-        let recorridoActual = []; // Guardará todas las secciones (ida + vuelta)
-        let totalKm = 0;
+        // Variables de estado: Lista de vueltas (cada vuelta puede tener ida, vuelta o ambas)
+        let vueltasList = [];
 
         // Referencias a elementos del DOM
         const selectLinea = document.getElementById('select-linea');
         const selectIda = document.getElementById('select-ida');
         const selectVuelta = document.getElementById('select-vuelta');
         const btnCargar = document.getElementById('btn-cargar');
+        const btnReiniciar = document.getElementById('btn-reiniciar');
         const routeContainer = document.getElementById('route-container');
         const instructionMsg = document.getElementById('instruction-msg');
         
@@ -158,7 +326,22 @@
         const resRealizados = document.getElementById('res-realizados');
         const resPerdidos = document.getElementById('res-perdidos');
 
-        // Inicializar selector de líneas
+        // Función para cargar las opciones de ramales según la línea elegida
+        function actualizarOpcionesRamales(linea) {
+            selectIda.innerHTML = '<option value="">-- No hizo Ida --</option>';
+            selectVuelta.innerHTML = '<option value="">-- No hizo Vuelta --</option>';
+            
+            if (linea && rutasData[linea]) {
+                const ramales = Object.keys(rutasData[linea]);
+                ramales.forEach(ramal => {
+                    const desc = rutasData[linea][ramal].label || `Ramal ${ramal}`;
+                    selectIda.innerHTML += `<option value="${ramal}">${desc}</option>`;
+                    selectVuelta.innerHTML += `<option value="${ramal}">${desc}</option>`;
+                });
+            }
+        }
+
+        // Inicializar selector de líneas con la primera línea activa por defecto para no restringir al usuario
         window.onload = () => {
             const lineas = Object.keys(rutasData);
             lineas.forEach(linea => {
@@ -167,164 +350,332 @@
                 option.textContent = `Línea ${linea}`;
                 selectLinea.appendChild(option);
             });
+
+            if (lineas.length > 0) {
+                selectLinea.value = lineas[0];
+                actualizarOpcionesRamales(lineas[0]);
+            }
         };
 
         // Manejar cambio de Línea
         selectLinea.addEventListener('change', (e) => {
-            const linea = e.target.value;
-            
-            // Limpiar selectores de ramales
-            selectIda.innerHTML = '<option value="">-- Elegir Ida --</option>';
-            selectVuelta.innerHTML = '<option value="">-- Elegir Vuelta --</option>';
-            
-            if (linea && rutasData[linea]) {
-                const ramales = Object.keys(rutasData[linea]);
-                
-                ramales.forEach(ramal => {
-                    selectIda.innerHTML += `<option value="${ramal}">Ramal ${ramal}</option>`;
-                    selectVuelta.innerHTML += `<option value="${ramal}">Ramal ${ramal}</option>`;
-                });
-                
-                selectIda.disabled = false;
-                selectVuelta.disabled = false;
-            } else {
-                selectIda.disabled = true;
-                selectVuelta.disabled = true;
-            }
+            actualizarOpcionesRamales(e.target.value);
         });
 
-        // Cargar el recorrido
+        // Agregar una nueva Vuelta (permite solo Ida, solo Vuelta o Ambos)
         btnCargar.addEventListener('click', () => {
             const linea = selectLinea.value;
-            const ida = selectIda.value;
-            const vuelta = selectVuelta.value;
+            const ramalIda = selectIda.value;
+            const ramalVuelta = selectVuelta.value;
 
-            if (!linea || !ida || !vuelta) {
-                // Pequeña advertencia visual en lugar de alert()
-                const originalText = btnCargar.innerText;
-                btnCargar.innerText = "¡Selecciona todas las opciones!";
+            // Solo pedimos que elija al menos un sentido (Ida o Vuelta)
+            if (!linea || (!ramalIda && !ramalVuelta)) {
+                const originalHTML = btnCargar.innerHTML;
+                btnCargar.innerText = "¡Elegí al menos un Ramal (Ida o Vuelta)!";
                 btnCargar.classList.replace('bg-blue-600', 'bg-red-500');
                 setTimeout(() => {
-                    btnCargar.innerText = originalText;
+                    btnCargar.innerHTML = originalHTML;
                     btnCargar.classList.replace('bg-red-500', 'bg-blue-600');
-                }, 2000);
+                }, 1800);
                 return;
             }
 
-            // Construir el array completo del recorrido
-            recorridoActual = [];
-            const dataIda = rutasData[linea][ida].ida;
-            const dataVuelta = rutasData[linea][vuelta].vuelta;
+            const dataIda = ramalIda ? rutasData[linea][ramalIda].ida : [];
+            const dataVuelta = ramalVuelta ? rutasData[linea][ramalVuelta].vuelta : [];
 
-            // Marcar las de ida
-            dataIda.forEach(sec => {
-                recorridoActual.push({ ...sec, sentido: 'IDA' });
-            });
+            const nuevaVuelta = {
+                id: Date.now() + Math.random(),
+                linea: linea,
+                ramalIda: ramalIda,
+                ramalVuelta: ramalVuelta,
+                seccionesIda: dataIda.map(sec => ({ ...sec, realizado: true })),
+                seccionesVuelta: dataVuelta.map(sec => ({ ...sec, realizado: true }))
+            };
 
-            // Marcar las de vuelta
-            dataVuelta.forEach(sec => {
-                recorridoActual.push({ ...sec, sentido: 'VUELTA' });
-            });
+            vueltasList.push(nuevaVuelta);
+            renderizarVueltas();
 
-            renderizarRuta();
+            // Desplazar suavemente hacia la nueva vuelta agregada
+            setTimeout(() => {
+                const bloques = routeContainer.querySelectorAll('.vuelta-block');
+                if (bloques.length > 0) {
+                    bloques[bloques.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
         });
 
-        function renderizarRuta() {
-            routeContainer.innerHTML = ''; // Limpiar
-            totalKm = 0;
-            
-            let htmlHTML = '';
-            
-            recorridoActual.forEach((seccion, index) => {
-                totalKm += seccion.km;
-                
-                // Divisores de Sentido
-                if (index === 0) {
-                    htmlHTML += `<div class="bg-gray-800 text-white text-sm font-bold p-2 text-center rounded shadow-sm sticky top-0 z-10">SENTIDO IDA (Ramal ${selectIda.value})</div>`;
-                } else if (index === rutasData[selectLinea.value][selectIda.value].ida.length) {
-                    htmlHTML += `<div class="bg-gray-800 text-white text-sm font-bold p-2 text-center rounded shadow-sm sticky top-0 z-10 mt-4">SENTIDO VUELTA (Ramal ${selectVuelta.value})</div>`;
+        // Reiniciar todas las vueltas
+        btnReiniciar.addEventListener('click', () => {
+            vueltasList = [];
+            renderizarVueltas();
+        });
+
+        // Permitir cambiar el ramal de Ida o Vuelta directamente dentro de una vuelta ya creada
+        window.cambiarRamalEnVuelta = function(vueltaIndex, sentido, nuevoRamal) {
+            const vuelta = vueltasList[vueltaIndex];
+            if (!vuelta) return;
+
+            if (sentido === 'ida') {
+                vuelta.ramalIda = nuevoRamal;
+                const dataIda = nuevoRamal ? rutasData[vuelta.linea][nuevoRamal].ida : [];
+                vuelta.seccionesIda = dataIda.map(sec => ({ ...sec, realizado: true }));
+            } else {
+                vuelta.ramalVuelta = nuevoRamal;
+                const dataVuelta = nuevoRamal ? rutasData[vuelta.linea][nuevoRamal].vuelta : [];
+                vuelta.seccionesVuelta = dataVuelta.map(sec => ({ ...sec, realizado: true }));
+            }
+
+            renderizarVueltas();
+        };
+
+        // Renderizar todas las vueltas y actualizar interfaz
+        function renderizarVueltas() {
+            if (vueltasList.length === 0) {
+                routeContainer.innerHTML = `
+                    <div id="empty-state" class="text-center text-gray-400 mt-10">
+                        <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+                        <p class="text-base px-6">Elegí un ramal de Ida, de Vuelta o ambos arriba y presioná <strong>"+ Agregar Vuelta"</strong>.</p>
+                    </div>
+                `;
+                instructionMsg.classList.add('hidden');
+                btnReiniciar.classList.add('hidden');
+                recalcularTotales();
+                return;
+            }
+
+            instructionMsg.classList.remove('hidden');
+            btnReiniciar.classList.remove('hidden');
+
+            let html = '';
+
+            vueltasList.forEach((vuelta, vIndex) => {
+                const numeroVuelta = vIndex + 1;
+                const ramalesDisponibles = Object.keys(rutasData[vuelta.linea]);
+
+                // Armar opciones de selectores internos para poder cambiar el ramal en cualquier momento
+                let opcionesIdaHTML = `<option value="" ${!vuelta.ramalIda ? 'selected' : ''}>-- Sin Ida --</option>`;
+                let opcionesVueltaHTML = `<option value="" ${!vuelta.ramalVuelta ? 'selected' : ''}>-- Sin Vuelta --</option>`;
+
+                ramalesDisponibles.forEach(r => {
+                    opcionesIdaHTML += `<option value="${r}" ${vuelta.ramalIda === r ? 'selected' : ''}>Ramal ${r}</option>`;
+                    opcionesVueltaHTML += `<option value="${r}" ${vuelta.ramalVuelta === r ? 'selected' : ''}>Ramal ${r}</option>`;
+                });
+
+                // Calcular subtotal de esta vuelta para mostrar en su encabezado
+                let kmVueltaTotal = 0;
+                let kmVueltaRealizado = 0;
+                vuelta.seccionesIda.forEach(s => { kmVueltaTotal += s.km; if (s.realizado) kmVueltaRealizado += s.km; });
+                vuelta.seccionesVuelta.forEach(s => { kmVueltaTotal += s.km; if (s.realizado) kmVueltaRealizado += s.km; });
+                const kmVueltaPerdido = kmVueltaTotal - kmVueltaRealizado;
+
+                html += `
+                    <div class="vuelta-block bg-white border-2 border-blue-900 rounded-2xl overflow-hidden shadow-md">
+                        <!-- Encabezado de Número de Vuelta -->
+                        <div class="bg-blue-900 text-white p-3.5">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-400 text-blue-950 font-black px-3 py-1 rounded-md text-sm uppercase tracking-wider shadow-sm">
+                                        ESTA ES LA VUELTA ${numeroVuelta}
+                                    </span>
+                                    <span class="font-bold text-sm text-blue-200">Línea ${vuelta.linea}</span>
+                                </div>
+                                <button onclick="eliminarVuelta(${vIndex})" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1.5 px-2.5 rounded-lg shadow transition-colors">
+                                    Borrar Vuelta
+                                </button>
+                            </div>
+
+                            <!-- Selectores rápidos dentro de la vuelta para cambiar ramal libremente -->
+                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-blue-800 text-xs">
+                                <div>
+                                    <span class="text-blue-200 block mb-1">Ida de Vuelta ${numeroVuelta}:</span>
+                                    <select onchange="cambiarRamalEnVuelta(${vIndex}, 'ida', this.value)" class="w-full bg-blue-950 text-white border border-blue-700 rounded-lg p-1.5 font-semibold">
+                                        ${opcionesIdaHTML}
+                                    </select>
+                                </div>
+                                <div>
+                                    <span class="text-blue-200 block mb-1">Vuelta de Vuelta ${numeroVuelta}:</span>
+                                    <select onchange="cambiarRamalEnVuelta(${vIndex}, 'vuelta', this.value)" class="w-full bg-blue-950 text-white border border-blue-700 rounded-lg p-1.5 font-semibold">
+                                        ${opcionesVueltaHTML}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones rápidos de la vuelta y resumen parcial -->
+                        <div class="bg-gray-100 px-3 py-2.5 border-b border-gray-200 flex flex-wrap justify-between items-center gap-2">
+                            <div class="text-xs font-semibold text-gray-700">
+                                Hecho: <span class="text-green-700 font-bold">${kmVueltaRealizado.toFixed(2)} km</span> | 
+                                Perdido: <span class="text-red-600 font-bold">${kmVueltaPerdido.toFixed(2)} km</span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <button onclick="cambiarEstadoVueltaCompleta(${vIndex}, true)" class="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold py-1.5 px-2.5 rounded shadow-sm">
+                                    Todo Hecho
+                                </button>
+                                <button onclick="cambiarEstadoVueltaCompleta(${vIndex}, false)" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold py-1.5 px-2.5 rounded shadow-sm">
+                                    Todo Perdido
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-3 space-y-2">
+                `;
+
+                // Bloque de IDA (solo si eligió ramal de ida)
+                if (vuelta.ramalIda && vuelta.seccionesIda.length > 0) {
+                    html += `
+                        <div class="bg-gray-800 text-white text-xs font-bold py-2 px-3 rounded-lg flex justify-between items-center">
+                            <span>SENTIDO IDA (Ramal ${vuelta.ramalIda})</span>
+                            <div class="space-x-1">
+                                <button onclick="cambiarEstadoSentido(${vIndex}, 'ida', true)" class="underline text-green-300 hover:text-green-200">Todo Sí</button>
+                                <span>/</span>
+                                <button onclick="cambiarEstadoSentido(${vIndex}, 'ida', false)" class="underline text-red-300 hover:text-red-200">Todo No</button>
+                            </div>
+                        </div>
+                    `;
+
+                    vuelta.seccionesIda.forEach((sec, sIndex) => {
+                        const estadoClass = sec.realizado ? 'state-completed' : 'state-interrupted';
+                        const badgeHTML = sec.realizado
+                            ? '<span class="inline-block bg-green-600 text-white text-xs font-bold px-2 py-0.5 rounded">✓ REALIZADO</span>'
+                            : '<span class="inline-block bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded">✕ NO REALIZADO (PERDIDO)</span>';
+
+                        html += `
+                            <div class="section-item ${estadoClass} rounded-xl p-3.5 cursor-pointer shadow-sm border border-gray-200" onclick="toggleSeccion(${vIndex}, 'ida', ${sIndex})">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-base leading-snug w-3/4 pr-2">${sIndex + 1}. ${sec.name}</span>
+                                    <span class="text-right font-bold text-base w-1/4">${sec.km.toFixed(2)} km</span>
+                                </div>
+                                <div class="mt-2 flex justify-between items-center">
+                                    ${badgeHTML}
+                                    <span class="text-xs opacity-75">Toca para cambiar</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `
+                        <div class="p-3 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center text-xs text-gray-500">
+                            Sin recorrido de <strong>Ida</strong> en esta vuelta. (Podés elegir uno arriba en el selector de la vuelta si querés sumarlo).
+                        </div>
+                    `;
                 }
 
-                htmlHTML += `
-                    <div id="sec-${index}" class="section-item state-pending rounded-lg p-4 mb-2 cursor-pointer shadow-sm border border-gray-200" onclick="marcarCorte(${index})">
-                        <div class="flex justify-between items-center">
-                            <span class="font-semibold text-lg leading-tight w-3/4">${seccion.name}</span>
-                            <span class="text-right font-bold w-1/4">${seccion.km.toFixed(2)} km</span>
+                // Bloque de VUELTA (solo si eligió ramal de vuelta)
+                if (vuelta.ramalVuelta && vuelta.seccionesVuelta.length > 0) {
+                    html += `
+                        <div class="bg-gray-800 text-white text-xs font-bold py-2 px-3 rounded-lg flex justify-between items-center mt-4">
+                            <span>SENTIDO VUELTA (Ramal ${vuelta.ramalVuelta})</span>
+                            <div class="space-x-1">
+                                <button onclick="cambiarEstadoSentido(${vIndex}, 'vuelta', true)" class="underline text-green-300 hover:text-green-200">Todo Sí</button>
+                                <span>/</span>
+                                <button onclick="cambiarEstadoSentido(${vIndex}, 'vuelta', false)" class="underline text-red-300 hover:text-red-200">Todo No</button>
+                            </div>
                         </div>
-                        <div class="text-xs mt-1 opacity-70 status-text">Pendiente</div>
+                    `;
+
+                    vuelta.seccionesVuelta.forEach((sec, sIndex) => {
+                        const estadoClass = sec.realizado ? 'state-completed' : 'state-interrupted';
+                        const badgeHTML = sec.realizado
+                            ? '<span class="inline-block bg-green-600 text-white text-xs font-bold px-2 py-0.5 rounded">✓ REALIZADO</span>'
+                            : '<span class="inline-block bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded">✕ NO REALIZADO (PERDIDO)</span>';
+
+                        html += `
+                            <div class="section-item ${estadoClass} rounded-xl p-3.5 cursor-pointer shadow-sm border border-gray-200" onclick="toggleSeccion(${vIndex}, 'vuelta', ${sIndex})">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-base leading-snug w-3/4 pr-2">${sIndex + 1}. ${sec.name}</span>
+                                    <span class="text-right font-bold text-base w-1/4">${sec.km.toFixed(2)} km</span>
+                                </div>
+                                <div class="mt-2 flex justify-between items-center">
+                                    ${badgeHTML}
+                                    <span class="text-xs opacity-75">Toca para cambiar</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `
+                        <div class="p-3 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center text-xs text-gray-500 mt-2">
+                            Sin recorrido de <strong>Vuelta</strong> en esta vuelta. (Podés elegir uno arriba en el selector de la vuelta si querés sumarlo).
+                        </div>
+                    `;
+                }
+
+                html += `
+                        </div>
                     </div>
                 `;
             });
 
-            // Botón extra al final por si hizo el recorrido completo sin problemas
-            htmlHTML += `
-                <div class="mt-4 p-4 bg-blue-50 border-2 border-blue-400 border-dashed rounded-lg text-center text-blue-800 font-bold cursor-pointer" onclick="marcarRecorridoCompleto()">
-                    ✅ Completó todo el recorrido sin cortes
-                </div>
-            `;
-
-            routeContainer.innerHTML = htmlHTML;
-            instructionMsg.classList.remove('hidden'); // Mostrar instrucción
-
-            // Actualizar panel (inicialmente todo en 0 y Total configurado)
-            actualizarResultados(totalKm, 0);
+            routeContainer.innerHTML = html;
+            recalcularTotales();
         }
 
-        // Lógica al tocar una sección (donde se rompió/cortó)
-        // Se asume que todo lo ANTERIOR a esta sección se realizó.
-        // La sección tocada y las SIGUIENTES NO se realizaron (se perdieron).
-        window.marcarCorte = function(indexCorte) {
-            let kmRealizados = 0;
+        // Alternar el estado de una sección individual (permite reactivar el colectivo en cualquier tramo)
+        window.toggleSeccion = function(vueltaIndex, sentido, seccionIndex) {
+            const vuelta = vueltasList[vueltaIndex];
+            if (!vuelta) return;
 
-            recorridoActual.forEach((seccion, index) => {
-                const el = document.getElementById(`sec-${index}`);
-                const statusText = el.querySelector('.status-text');
+            if (sentido === 'ida') {
+                vuelta.seccionesIda[seccionIndex].realizado = !vuelta.seccionesIda[seccionIndex].realizado;
+            } else {
+                vuelta.seccionesVuelta[seccionIndex].realizado = !vuelta.seccionesVuelta[seccionIndex].realizado;
+            }
 
-                // Limpiar clases
-                el.classList.remove('state-pending', 'state-completed', 'state-interrupted');
-
-                if (index < indexCorte) {
-                    // Completado
-                    el.classList.add('state-completed');
-                    statusText.innerText = "✓ Recorrido completado";
-                    kmRealizados += seccion.km;
-                } else if (index === indexCorte) {
-                    // Punto de corte
-                    el.classList.add('state-interrupted');
-                    statusText.innerText = "⚠️ Corte de servicio aquí";
-                } else {
-                    // Perdido
-                    el.classList.add('state-pending');
-                    statusText.innerText = "✕ No realizado";
-                }
-            });
-
-            actualizarResultados(totalKm, kmRealizados);
+            renderizarVueltas();
         };
 
-        window.marcarRecorridoCompleto = function() {
-            let kmRealizados = 0;
-            
-            recorridoActual.forEach((seccion, index) => {
-                const el = document.getElementById(`sec-${index}`);
-                const statusText = el.querySelector('.status-text');
-                
-                el.classList.remove('state-pending', 'state-interrupted');
-                el.classList.add('state-completed');
-                statusText.innerText = "✓ Recorrido completado";
-                
-                kmRealizados += seccion.km;
+        // Marcar toda una vuelta como hecha o perdida
+        window.cambiarEstadoVueltaCompleta = function(vueltaIndex, estado) {
+            const vuelta = vueltasList[vueltaIndex];
+            if (!vuelta) return;
+
+            vuelta.seccionesIda.forEach(sec => sec.realizado = estado);
+            vuelta.seccionesVuelta.forEach(sec => sec.realizado = estado);
+            renderizarVueltas();
+        };
+
+        // Marcar todo un sentido (solo Ida o solo Vuelta) como hecho o perdido
+        window.cambiarEstadoSentido = function(vueltaIndex, sentido, estado) {
+            const vuelta = vueltasList[vueltaIndex];
+            if (!vuelta) return;
+
+            if (sentido === 'ida') {
+                vuelta.seccionesIda.forEach(sec => sec.realizado = estado);
+            } else {
+                vuelta.seccionesVuelta.forEach(sec => sec.realizado = estado);
+            }
+            renderizarVueltas();
+        };
+
+        // Eliminar una vuelta específica
+        window.eliminarVuelta = function(vueltaIndex) {
+            vueltasList.splice(vueltaIndex, 1);
+            renderizarVueltas();
+        };
+
+        // Calcular y mostrar el total general de todas las vueltas cargadas
+        function recalcularTotales() {
+            let totalGeneral = 0;
+            let realizadosGeneral = 0;
+
+            vueltasList.forEach(vuelta => {
+                vuelta.seccionesIda.forEach(sec => {
+                    totalGeneral += sec.km;
+                    if (sec.realizado) realizadosGeneral += sec.km;
+                });
+                vuelta.seccionesVuelta.forEach(sec => {
+                    totalGeneral += sec.km;
+                    if (sec.realizado) realizadosGeneral += sec.km;
+                });
             });
 
-            actualizarResultados(totalKm, kmRealizados);
-        }
+            const perdidosGeneral = totalGeneral - realizadosGeneral;
 
-        function actualizarResultados(total, realizados) {
-            const perdidos = total - realizados;
-
-            resTotal.innerText = total.toFixed(2) + " km";
-            resRealizados.innerText = realizados.toFixed(2) + " km";
-            resPerdidos.innerText = perdidos.toFixed(2) + " km";
+            resTotal.innerText = totalGeneral.toFixed(2) + " km";
+            resRealizados.innerText = realizadosGeneral.toFixed(2) + " km";
+            resPerdidos.innerText = perdidosGeneral.toFixed(2) + " km";
         }
 
     </script>
