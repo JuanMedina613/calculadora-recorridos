@@ -114,7 +114,7 @@
         if (estado.vueltas.length === 0) {
             contenedor.innerHTML = `
                 <div class="vacio">
-                    <div class="vacio__icon">🛣️</div>
+                    <div class="vacio__icon">Sin vueltas cargadas</div>
                     Elegí los ramales y tocá <b>Agregar vuelta</b>.<br>
                     Después podés marcar cada sección como hecha o perdida.
                 </div>`;
@@ -125,7 +125,7 @@
                 <article class="card vuelta">
                     <div class="vuelta__head">
                         <div><small>Línea ${v.linea}</small><h2>Vuelta ${vi + 1}</h2></div>
-                        <button type="button" class="btn btn--icon" data-accion="borrar" data-v="${vi}" aria-label="Borrar vuelta ${vi + 1}">✕ Borrar</button>
+                        <button type="button" class="btn btn--icon" data-accion="borrar" data-v="${vi}" aria-label="Borrar vuelta ${vi + 1}">Borrar</button>
                     </div>
                     <div class="resumen">
                         <div><span>Programado</span><strong>${fmt(c.total)}</strong></div>
@@ -253,7 +253,7 @@
 
     function pintarBotonTema() {
         const oscuro = temaActual() === 'dark';
-        btnTema.textContent = oscuro ? '☀️' : '🌙';
+        btnTema.textContent = oscuro ? 'Claro' : 'Oscuro';
         btnTema.setAttribute('aria-label', oscuro ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
     }
     btnTema.addEventListener('click', () => {
