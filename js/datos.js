@@ -185,8 +185,146 @@ const rutasData = {
                 {name: 'Olmos a Cruce de Lomas', km: 4.21}
             ]
         }
+    },
+    // Línea 117: A y B solo difieren entre Quesada y La Noria
+    '117': {
+        'A': {
+            nombre: 'Ramal A (Lomas - Rivadavia)',
+            ida: [
+                {name: 'Cab. 117 a Copig. Virg.', km: 2.00},
+                {name: 'Copig. Virg. a Quesada', km: 3.15},
+                {name: 'Quesada a La Noria', km: 3.70},
+                {name: 'La Noria a Soldado', km: 4.35},
+                {name: 'Soldado a Zuviría', km: 4.50},
+                {name: 'Zuviría a Emilio Castro', km: 3.00},
+                {name: 'Emilio Castro a Liniers', km: 2.80},
+                {name: 'Liniers a Lope de Vega', km: 3.80},
+                {name: 'Lope de Vega a Constituyentes', km: 5.00},
+                {name: 'Constituyentes a Rivadavia', km: 6.50}
+            ],
+            vuelta: [
+                {name: 'Rivadavia a Constituyentes', km: 6.95},
+                {name: 'Constituyentes a Lope de Vega', km: 4.98},
+                {name: 'Lope de Vega a Liniers', km: 3.77},
+                {name: 'Liniers a Emilio Castro', km: 2.70},
+                {name: 'Emilio Castro a Zuviría', km: 3.00},
+                {name: 'Zuviría a Soldado', km: 4.95},
+                {name: 'Soldado a La Noria', km: 3.35},
+                {name: 'La Noria a Quesada', km: 3.30},
+                {name: 'Quesada a Copig. Virg.', km: 3.10},
+                {name: 'Copig. Virg. a Lomas', km: 2.10}
+            ]
+        },
+        'B': {
+            nombre: 'Ramal B (Lomas - Rivadavia)',
+            ida: [
+                {name: 'Cab. 117 a Copig. Virg.', km: 2.00},
+                {name: 'Copig. Virg. a Quesada', km: 3.15},
+                {name: 'Quesada a La Noria', km: 3.65},
+                {name: 'La Noria a Soldado', km: 4.35},
+                {name: 'Soldado a Zuviría', km: 4.50},
+                {name: 'Zuviría a Emilio Castro', km: 3.00},
+                {name: 'Emilio Castro a Liniers', km: 2.80},
+                {name: 'Liniers a Lope de Vega', km: 3.80},
+                {name: 'Lope de Vega a Constituyentes', km: 5.00},
+                {name: 'Constituyentes a Rivadavia', km: 6.50}
+            ],
+            vuelta: [
+                {name: 'Rivadavia a Constituyentes', km: 6.95},
+                {name: 'Constituyentes a Lope de Vega', km: 4.98},
+                {name: 'Lope de Vega a Liniers', km: 3.77},
+                {name: 'Liniers a Emilio Castro', km: 2.70},
+                {name: 'Emilio Castro a Zuviría', km: 3.00},
+                {name: 'Zuviría a Soldado', km: 4.95},
+                {name: 'Soldado a La Noria', km: 3.35},
+                {name: 'La Noria a Quesada', km: 3.10},
+                {name: 'Quesada a Copig. Virg.', km: 3.10},
+                {name: 'Copig. Virg. a Lomas', km: 2.10}
+            ]
+        },
+        'A_LINIERS': {
+            nombre: 'Ramal A Corto (Lomas - Liniers)',
+            ida: [
+                {name: 'Cab. 117 a Copig. Virg.', km: 2.00},
+                {name: 'Copig. Virg. a Quesada', km: 3.15},
+                {name: 'Quesada a La Noria', km: 3.70},
+                {name: 'La Noria a Soldado', km: 4.35},
+                {name: 'Soldado a Zuviría', km: 4.50},
+                {name: 'Zuviría a Emilio Castro', km: 3.00},
+                {name: 'Emilio Castro a Liniers', km: 2.80}
+            ],
+            vuelta: [
+                {name: 'Liniers a Emilio Castro', km: 2.70},
+                {name: 'Emilio Castro a Zuviría', km: 3.00},
+                {name: 'Zuviría a Soldado', km: 4.95},
+                {name: 'Soldado a La Noria', km: 3.35},
+                {name: 'La Noria a Quesada', km: 3.30},
+                {name: 'Quesada a Copig. Virg.', km: 3.10},
+                {name: 'Copig. Virg. a Lomas', km: 2.10}
+            ]
+        },
+        'B_LINIERS': {
+            nombre: 'Ramal B Corto (Lomas - Liniers)',
+            ida: [
+                {name: 'Cab. 117 a Copig. Virg.', km: 2.00},
+                {name: 'Copig. Virg. a Quesada', km: 3.15},
+                {name: 'Quesada a La Noria', km: 3.65},
+                {name: 'La Noria a Soldado', km: 4.35},
+                {name: 'Soldado a Zuviría', km: 4.50},
+                {name: 'Zuviría a Emilio Castro', km: 3.00},
+                {name: 'Emilio Castro a Liniers', km: 2.80}
+            ],
+            vuelta: [
+                {name: 'Liniers a Emilio Castro', km: 2.70},
+                {name: 'Emilio Castro a Zuviría', km: 3.00},
+                {name: 'Zuviría a Soldado', km: 4.95},
+                {name: 'Soldado a La Noria', km: 3.35},
+                {name: 'La Noria a Quesada', km: 3.10},
+                {name: 'Quesada a Copig. Virg.', km: 3.10},
+                {name: 'Copig. Virg. a Lomas', km: 2.10}
+            ]
+        },
+        'NORIA': {
+            nombre: 'Desde La Noria (ida a Rivadavia, vuelta a Lomas)',
+            ida: [
+                {name: 'La Noria a Soldado', km: 4.35},
+                {name: 'Soldado a Zuviría', km: 4.50},
+                {name: 'Zuviría a Emilio Castro', km: 3.00},
+                {name: 'Emilio Castro a Liniers', km: 2.80},
+                {name: 'Liniers a Lope de Vega', km: 3.80},
+                {name: 'Lope de Vega a Constituyentes', km: 5.00},
+                {name: 'Constituyentes a Rivadavia', km: 6.50}
+            ],
+            vuelta: [
+                {name: 'La Noria a Quesada', km: 3.30},
+                {name: 'Quesada a Copig. Virg.', km: 3.10},
+                {name: 'Copig. Virg. a Lomas', km: 2.10}
+            ]
+        }
     }
 };
 
-const KM_LA_NORIA = 11.50;
-const KM_117 = 3.50;
+// Grupos que se eligen en la pantalla de inicio (en este orden).
+// Cada grupo guarda su propia planilla y tiene sus propios traslados.
+const GRUPOS = [
+    {
+        id: '188-20',
+        nombre: 'Líneas 188 y 20',
+        lineas: ['188', '20'],
+        guardado: 'calculadora-colectivos-v1',
+        traslados: [
+            {id: 'noria', nombre: 'La Noria', km: 11.50},
+            {id: '117', nombre: '117', km: 3.50}
+        ]
+    },
+    {
+        id: '117',
+        nombre: 'Línea 117',
+        lineas: ['117'],
+        guardado: 'calculadora-colectivos-117-v1',
+        traslados: [
+            {id: 'noria', nombre: 'La Noria', km: 9.00},
+            {id: 'lomas', nombre: 'Cruce Lomas', km: 3.50}
+        ]
+    }
+];

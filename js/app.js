@@ -1,38 +1,33 @@
 // Lógica de la calculadora. Los datos están en datos.js.
 (() => {
-    const STORAGE_KEY = 'calculadora-colectivos-v1';
-    const TRASLADOS_KM = {
-        'ida-noria': KM_LA_NORIA,
-        'ida-117': KM_117,
-        'vuelta-noria': KM_LA_NORIA,
-        'vuelta-117': KM_117
-    };
-
     const $ = (id) => document.getElementById(id);
+    const pantallaInicio = $('pantalla-inicio');
+    const pantallaCalc = $('pantalla-calculadora');
+    const opcionesGrupo = $('opciones-grupo');
     const selectorLinea = $('selector-linea');
     const selectIda = $('select-ida');
     const selectVuelta = $('select-vuelta');
     const contenedor = $('vueltas-container');
     const errorMsg = $('error-msg');
-    const checksTraslado = document.querySelectorAll('[data-traslado]');
+    const contTraslados = $('traslados');
 
-    // Orden en que se muestran las líneas (JS ordena solo las claves numéricas, por eso se fija acá)
-    const LINEAS = ['188', ...Object.keys(rutasData).filter(l => l !== '188')];
-    let estado = { linea: LINEAS[0], traslados: {}, vueltas: [] };
+    let grupo = null;       // grupo de líneas abierto (ver GRUPOS en datos.js)
+    let trasladosKm = {};   // 'ida-noria' → km, según el grupo
+    let estado = null;
 
     const fmt = (n) => n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    // ---------- Guardado (para no perder la planilla al recargar) ----------
+    // ---------- Guardado (cada grupo tiene su planilla, para no perderla al recargar) ----------
     function guardar() {
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(estado)); } catch (e) { /* sin almacenamiento */ }
+        if (!grupo) return;
+        try { localStorage.setItem(grupo.guardado, JSON.stringify(estado)); } catch (e) { /* sin almacenamiento */ }
     }
-    function cargar() {
+    function leerGuardado(g) {
         try {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (!raw) return;
-            const data = JSON.parse(raw);
-            if (data && rutasData[data.linea] && Array.isArray(data.vueltas)) estado = data;
+            const data = JSON.parse(localStorage.getItem(g.guardado));
+            if (data && g.lineas.includes(data.linea) && Array.isArray(data.vueltas)) return data;
         } catch (e) { /* ignorar */ }
+        return null;
     }
 
     // ---------- Helpers ----------
@@ -64,7 +59,7 @@
 
     // ---------- Render de la configuración ----------
     function renderLinea() {
-        selectorLinea.innerHTML = LINEAS.map(l =>
+        selectorLinea.innerHTML = grupo.lineas.map(l =>
             `<button type="button" role="radio" aria-checked="${l === estado.linea}" data-linea="${l}">Línea ${l}</button>`
         ).join('');
         const primero = Object.keys(rutasData[estado.linea])[0];
@@ -73,7 +68,11 @@
     }
 
     function renderTraslados() {
-        checksTraslado.forEach(c => { c.checked = !!estado.traslados[c.dataset.traslado]; });
+        contTraslados.innerHTML = ['ida', 'vuelta'].map(s => `
+            <div class="traslados__grupo">
+                <span class="traslados__label">${s === 'ida' ? 'Ida' : 'Vuelta'}</span>
+                ${grupo.traslados.map(t => `<label class="chip"><input type="checkbox" data-traslado="${s}-${t.id}" data-grupo="${s}"${estado.traslados[s + '-' + t.id] ? ' checked' : ''}><span>${t.nombre} <b>+${fmt(t.km)}</b></span></label>`).join('')}
+            </div>`).join('');
     }
 
     // ---------- Render de las vueltas ----------
@@ -143,7 +142,7 @@
     function actualizarTotales() {
         // Con 3 o más vueltas, en PC la página usa todo el ancho de la pantalla
         document.querySelector('.app').classList.toggle('app--ancha', estado.vueltas.length >= 3);
-        const traslados = Object.keys(TRASLADOS_KM).reduce((s, k) => s + (estado.traslados[k] ? TRASLADOS_KM[k] : 0), 0);
+        const traslados = Object.keys(trasladosKm).reduce((s, k) => s + (estado.traslados[k] ? trasladosKm[k] : 0), 0);
         let total = traslados, realizados = traslados;
         estado.vueltas.forEach(v => { const c = calcVuelta(v); total += c.total; realizados += c.realizado; });
 
@@ -164,9 +163,11 @@
     });
 
     // Traslados: solo uno por ida y uno por vuelta (al marcar uno se desmarca el otro del mismo grupo)
-    checksTraslado.forEach(c => c.addEventListener('change', () => {
+    contTraslados.addEventListener('change', (e) => {
+        const c = e.target.closest('[data-traslado]');
+        if (!c) return;
         if (c.checked) {
-            checksTraslado.forEach(otro => {
+            contTraslados.querySelectorAll('[data-traslado]').forEach(otro => {
                 if (otro !== c && otro.dataset.grupo === c.dataset.grupo) {
                     otro.checked = false;
                     estado.traslados[otro.dataset.traslado] = false;
@@ -175,7 +176,7 @@
         }
         estado.traslados[c.dataset.traslado] = c.checked;
         actualizarTotales();
-    }));
+    });
 
     $('btn-agregar').addEventListener('click', () => {
         const ramalIda = selectIda.value, ramalVuelta = selectVuelta.value;
@@ -264,10 +265,56 @@
     });
     oscuroSistema.addEventListener('change', pintarBotonTema);
 
+    // ---------- Pantalla de inicio y cambio de grupo ----------
+    // El grupo abierto va en la dirección (#188-20, #117): al recargar se queda ahí
+    // y el botón Atrás del celular vuelve a la pantalla de inicio.
+    function renderInicio() {
+        opcionesGrupo.innerHTML = GRUPOS.map(g => {
+            const guardado = leerGuardado(g);
+            const n = guardado ? guardado.vueltas.length : 0;
+            const nota = n ? `Planilla en curso · ${n} ${n === 1 ? 'vuelta' : 'vueltas'}` : g.nombre;
+            return `
+            <a class="opcion" href="#${g.id}">
+                <span>
+                    <span class="opcion__num">${g.lineas.join('<i>·</i>')}</span>
+                    <span class="opcion__detalle${n ? ' opcion__detalle--activa' : ''}">${nota}</span>
+                </span>
+                <span class="opcion__flecha" aria-hidden="true"></span>
+            </a>`;
+        }).join('');
+    }
+
+    function abrirGrupo(g) {
+        grupo = g;
+        estado = leerGuardado(g) || { linea: g.lineas[0], traslados: {}, vueltas: [] };
+        trasladosKm = {};
+        g.traslados.forEach(t => { trasladosKm['ida-' + t.id] = t.km; trasladosKm['vuelta-' + t.id] = t.km; });
+        $('grupo-nombre').textContent = g.nombre;
+        // Con una sola línea no hace falta elegirla: se oculta ese paso y se renumeran los demás
+        $('step-linea').hidden = g.lineas.length < 2;
+        document.querySelectorAll('.step:not([hidden]) .step__num').forEach((n, i) => { n.textContent = i + 1; });
+        errorMsg.hidden = true;
+        renderLinea();
+        renderTraslados();
+        renderVueltas();
+    }
+
+    function mostrarPantalla() {
+        const g = GRUPOS.find(x => x.id === decodeURIComponent(location.hash.slice(1)));
+        if (g) {
+            abrirGrupo(g);
+        } else {
+            grupo = null;
+            renderInicio();
+            document.querySelector('.app').classList.remove('app--ancha');
+        }
+        pantallaInicio.hidden = !!g;
+        pantallaCalc.hidden = !g;
+        window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', mostrarPantalla);
+
     // ---------- Inicio ----------
-    cargar();
-    renderLinea();
-    renderTraslados();
-    renderVueltas();
     pintarBotonTema();
+    mostrarPantalla();
 })();
