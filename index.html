@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#fbf7f0">
-    <meta name="description" content="Control de kilómetros realizados y perdidos por vuelta, para las líneas 188 y 20.">
+    <meta name="description" content="Control de kilómetros realizados y perdidos por vuelta, para las líneas 188, 20 y 117.">
     <title>Calculadora de Recorridos</title>
     <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="apple-touch-icon" href="img/favicon.png">
@@ -31,11 +31,22 @@
 
     <main class="app">
 
-        <div class="layout">
+        <!-- Pantalla de inicio: elegir grupo de líneas -->
+        <section id="pantalla-inicio" class="inicio" hidden>
+            <h2 class="inicio__titulo">Elegí la línea</h2>
+            <p class="inicio__sub">Cada una guarda su propia planilla.</p>
+            <div id="opciones-grupo" class="inicio__opciones"></div>
+        </section>
+
+        <div id="pantalla-calculadora" class="layout" hidden>
         <aside class="panel">
+        <div class="grupo">
+            <span id="grupo-nombre" class="grupo__nombre"></span>
+            <a href="#" class="grupo__cambiar">Cambiar de línea</a>
+        </div>
         <section class="card config">
             <!-- 1. Línea -->
-            <div class="step">
+            <div class="step" id="step-linea">
                 <div class="step__title"><span class="step__num">1</span> Línea</div>
                 <div class="segmented" id="selector-linea" role="radiogroup" aria-label="Línea"></div>
             </div>
@@ -43,18 +54,7 @@
             <!-- 2. Traslados -->
             <div class="step">
                 <div class="step__title"><span class="step__num">2</span> Traslados de la planilla</div>
-                <div class="traslados">
-                    <div class="traslados__grupo">
-                        <span class="traslados__label">Ida</span>
-                        <label class="chip"><input type="checkbox" data-traslado="ida-noria" data-grupo="ida"><span>La Noria <b>+11,50</b></span></label>
-                        <label class="chip"><input type="checkbox" data-traslado="ida-117" data-grupo="ida"><span>117 <b>+3,50</b></span></label>
-                    </div>
-                    <div class="traslados__grupo">
-                        <span class="traslados__label">Vuelta</span>
-                        <label class="chip"><input type="checkbox" data-traslado="vuelta-noria" data-grupo="vuelta"><span>La Noria <b>+11,50</b></span></label>
-                        <label class="chip"><input type="checkbox" data-traslado="vuelta-117" data-grupo="vuelta"><span>117 <b>+3,50</b></span></label>
-                    </div>
-                </div>
+                <div class="traslados" id="traslados"></div>
             </div>
 
             <!-- 3. Nueva vuelta -->
